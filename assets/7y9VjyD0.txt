@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "full_name": "bernardo lopes de souza",
+    "account_status": "active",
+    "phone": "21 9111",
+    "payments": null,
+    "email": "eusoumteste@gmail.com",
+    "password": "$2a$10$Kt2YE8iWTGsqJBVG15cuVuUsJP/FxoPfEKdp.2pyR/UWQZ9sqgFuO",
+    "created_at": "2021-03-07 18:14:17",
+    "updated_at": "2021-03-07 18:14:17",
+    "plans": [
+      {
+        "id": 1,
+        "user_id": 1,
+        "plan_name": "Up date de apresentação",
+        "plan_id": 1,
+        "plan_status": "Em andamento",
+        "links": "[object Object]",
+        "user_comments": "Segue meu currículo!",
+        "user_feedback": "Ainda não existem feedbacks...",
+        "created_at": "2021-03-07 18:14:28",
+        "updated_at": "2021-03-07 18:14:28",
+        "files": [
+          {
+            "id": 1,
+            "plan_id": 1,
+            "user_url": "https://rh.codandosonhos.com:9000/my-bucket/Certificado DOcker.pdf-bb14f0fa-87b1-424e-b64b-5956d847bc67.pdf",
+            "feedback_url": "",
+            "created_at": "2021-03-07 18:15:32",
+            "updated_at": "2021-03-07 18:15:32"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "full_name": "bernardo lopes de souza",
+    "account_status": "active",
+    "phone": "21 9111",
+    "payments": null,
+    "email": "eusoumteste222@gmail.com",
+    "password": "$2a$10$SI0rnclI8W5vz3tV33zc.utlx4jM91xXDlS4r.l3wjg43gKPPJ54q",
+    "created_at": "2021-03-07 18:21:31",
+    "updated_at": "2021-03-07 18:21:31",
+    "plans": [
+      {
+        "id": 2,
+        "user_id": 2,
+        "plan_name": "Up date de apresentação",
+        "plan_id": 1,
+        "plan_status": "Em andamento",
+        "links": "[object Object]",
+        "user_comments": "Segue meu currículo!",
+        "user_feedback": "Ainda não existem feedbacks...",
+        "created_at": "2021-03-07 18:22:02",
+        "updated_at": "2021-03-07 18:22:02",
+        "files": [
+          {
+            "id": 2,
+            "plan_id": 2,
+            "user_url": "https://rh.codandosonhos.com:9000/my-bucket/Certificado DOcker.pdf-f33f40e9-f35f-4569-8fbd-63f607c5c170.pdf",
+            "feedback_url": "",
+            "created_at": "2021-03-07 18:22:11",
+            "updated_at": "2021-03-07 18:22:11"
+          }
+        ]
+      }
+    ]
+  }
+]
