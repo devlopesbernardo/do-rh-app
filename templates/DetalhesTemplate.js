@@ -8,15 +8,15 @@ import {
   Image,
 } from 'react-native';
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider, Layout } from '@ui-kitten/components';
+import { ApplicationProvider, Input, Layout } from '@ui-kitten/components';
 import foto from '../assets/leo.png';
 import BannerRevisao from '../assets/BannerRevisao.jpg';
 import ButtonRH from '../atoms/Button';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 
-export default function RevisaoTemplate() {
-  const route = 'Detalhes';
+export default function DetalhesTemplate() {
+  const route = 'RevisaoTemplate';
   return (
     <ScrollView style={styles.container}>
       <View style={styles.image}>
@@ -41,15 +41,9 @@ export default function RevisaoTemplate() {
         </ImageBackground>
       </View>
       <View style={styles.description}>
-        <Text style={styles.h1}>Descrição do produto</Text>
-        <Text style={styles.h4}>
-          Nisi, ultrices augue mollis tempus in. Nec eget nulla vitae lorem orci
-          nisi. Ac lacus lectus tempus egestas sed. At accumsan semper mi
-          faucibus lacus. Ultricies nunc dolor odio amet neque, vel orci lacus.
-          Semper a, amet id semper. Quam consequat at duis lorem pellentesque
-          elementum aliquam pellentesque. Vulputate molestie pellentesque enim,
-          sit nunc nunc.
-        </Text>
+        <Text style={styles.h1}>Pagamento</Text>
+        <Text style={styles.h4}>Nome completo</Text>
+        <Input style={styles.input} />
         <View style={styles.parentbutton}>
           <ButtonRH
             route={route}
@@ -113,7 +107,7 @@ const styles = StyleSheet.create({
   },
   image: {},
   bg: {
-    height: 300,
+    height: 200,
     width: '100%',
     resizeMode: 'cover',
     // flex: 2,
@@ -133,6 +127,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: '5%',
     bottom: 10,
+  },
+  input: {
+    width: '100%',
   },
   h1: {
     fontFamily: 'Poppins_800ExtraBold',

@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import { ApplicationProvider, Layout } from '@ui-kitten/components';
 
 import Revisao from './pages/Revisao';
+import DetalhesTemplate from './templates/DetalhesTemplate';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,7 @@ function App() {
       >
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Revisao" component={Revisao} />
+        <Stack.Screen name="Detalhes" component={DetalhesTemplate} />
       </Stack.Navigator>
     </NavigationContainer>
   );
