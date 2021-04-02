@@ -6,6 +6,7 @@ import {
   Text,
   View,
   Image,
+  Alert,
 } from 'react-native';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Input, Layout } from '@ui-kitten/components';
@@ -14,9 +15,26 @@ import BannerRevisao from '../assets/BannerRevisao.jpg';
 import ButtonRH from '../atoms/Button';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import userData from '../UserStore';
+import axios from 'axios';
 
+const url = 'http://209.126.2.112:3333';
 export default function DetalhesTemplate() {
-  const route = 'RevisaoTemplate';
+  const [logged, setLogged] = React.useState(1);
+  const navigation = useNavigation();
+  React.useEffect(() => {
+    if (userData.data.token) {
+      setLogged(1);
+    } else {
+      setLogged(0);
+    }
+  }, []);
+  const route = useRoute();
+  console.log('eu sou o id', route.params.service.id);
+  let plan = userData.plans[route.params.service.id - 1];
+  console.log('id', plan);
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.image}>
@@ -36,36 +54,54 @@ export default function DetalhesTemplate() {
                 style={styles.arrow}
               />
             </View>
-            <Text style={styles.headerText}>Revisão Curricular</Text>
+            <Text style={styles.headerText}>{plan.nome}</Text>
           </View>
         </ImageBackground>
       </View>
       <View style={styles.description}>
         <Text style={styles.h1}>Pagamento</Text>
         <Text style={styles.h4}>Nome completo</Text>
-        <Input style={styles.input} />
+        <Input style={styles.input} textStyle={{ paddingVertical: 5 }} />
+        <Text style={styles.h4}>CPF</Text>
+        <Input style={styles.input} textStyle={{ paddingVertical: 5 }} />
+        <Text style={styles.h4}>Cartão</Text>
+        <Input style={styles.input} textStyle={{ paddingVertical: 5 }} />
         <View style={styles.parentbutton}>
           <ButtonRH
-            route={route}
-            text="Contratar"
+            //route={'Parabens'}
+            onPress={async () => {
+              if (logged) {
+                const setPlan = await axios({
+                  method: 'post',
+                  headers: {
+                    'content-type': 'application/json;charset=utf-8',
+                    accept: '*/*',
+                    Authorization: `Bearer ${userData.data.token}`,
+                  },
+                  url: `${url}/plan/analise-curricular`,
+                  data: {
+                    plan_name: `${plan.nome}`,
+                    plan_id: userData.plans[route.params.service.id - 1].id,
+                    links: { abc: 'dorh.com' },
+                    user_comments: 'Segue meu currículo!',
+                  },
+                });
+                let data = await setPlan.data;
+                console.log(data);
+                navigation.navigate('Plan');
+              } else {
+                Alert.alert(
+                  'Você não está logado',
+                  'Por favor, se autentique antes de comprar',
+                );
+              }
+            }}
+            text="Finalizar compra"
             style={styles.button}
             buttonStyle={styles.buttonStyle}
             fontSize={{ fontSize: 25 }}
             size="30"
           />
-          <Text style={[styles.h1, styles.spaced]}>Quem faz</Text>
-          <View style={styles.faz}>
-            <View style={styles.foto}>
-              <ImageBackground source={foto} style={styles.foto} />
-            </View>
-            <View style={styles.wrapperProfile}>
-              <Text style={styles.h2}>Leonardo Wienen</Text>
-              <Text style={styles.h6}>
-                Nisi, ultrices augue mollis tempus in. Nec eget nulla vitae
-                lorem orci nisi. Ac lacus lectus tempus egestas sed.
-              </Text>
-            </View>
-          </View>
         </View>
       </View>
     </ScrollView>
@@ -77,6 +113,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     marginTop: 35,
     flexDirection: 'column',
+    height: '100%',
   },
   headerTop: {
     display: 'flex',
@@ -107,7 +144,7 @@ const styles = StyleSheet.create({
   },
   image: {},
   bg: {
-    height: 200,
+    height: 220,
     width: '100%',
     resizeMode: 'cover',
     // flex: 2,
@@ -130,6 +167,8 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
+    backgroundColor: '#F8F7FB',
+    borderRadius: 11,
   },
   h1: {
     fontFamily: 'Poppins_800ExtraBold',
@@ -138,6 +177,11 @@ const styles = StyleSheet.create({
   h5: {
     fontFamily: 'Poppins_400Regular',
     fontSize: 18,
+  },
+  h4: {
+    fontFamily: 'Poppins_700Bold',
+    fontSize: 14,
+    marginTop: 10,
   },
 
   parentbutton: {

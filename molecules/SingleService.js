@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Image, Text } from 'react-native';
 import { Layout } from '@ui-kitten/components';
 import Button from '../atoms/Button';
 import prod from '../assets/p1.jpg';
+import { useNavigation } from '@react-navigation/native';
+
 export default function SingleService(props) {
   let route = props.route;
+  let descriptions = props.descriptions;
+  const navigation = useNavigation();
+  console.log(props.service);
+
   return (
     <Layout style={styles.container}>
       <Layout style={styles.imageContainer}>
@@ -12,14 +18,22 @@ export default function SingleService(props) {
       </Layout>
       <Layout style={styles.texts}>
         <Text style={styles.h5}>{props.service}</Text>
-        <Text style={styles.h6}>{`\u2022 ${props.descriptionMain}`}</Text>
-        <Text style={styles.h6}>{`\u2022 ${props.descriptionSecondary}`}</Text>
+        {descriptions !== undefined
+          ? Object.keys(props.descriptions).map((key, index) => (
+              <Text
+                key={key}
+                style={styles.h6}
+              >{`\u2022 ${props.descriptions[key]}`}</Text>
+            ))
+          : null}
 
         <Button
           route={route}
+          service={props.id}
           text="Eu quero!"
           style={styles.button}
           red={true}
+          accessory={true}
           buttonStyle={styles.buttonStyle}
           fontSize={{ fontSize: 25, color: '#D31B28' }}
           size="39"
@@ -40,7 +54,8 @@ const styles = StyleSheet.create({
     borderColor: '#DADADA',
     borderWidth: 1,
     fontFamily: 'Poppins_400Regular',
-    maxWidth: '90%',
+    maxWidth: '100%',
+    marginHorizontal: 10,
     borderTopColor: '#D31B28',
     borderTopWidth: 3,
     elevation: 2,

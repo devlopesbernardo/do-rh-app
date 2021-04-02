@@ -1,17 +1,27 @@
 import React from 'react';
 import { StyleSheet, Image, View } from 'react-native';
 import { Layout, Text } from '@ui-kitten/components';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import logo from '../assets/logo-black.png';
+import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { view } from '@risingstack/react-easy-state';
+import userData from '../UserStore';
 
-export default function Header() {
+export const Header = view(() => {
+  const navigation = useNavigation();
+
   return (
     <Layout style={styles.container}>
       <Layout style={styles.logocontainer}>
         <Image source={logo} style={styles.logo} />
       </Layout>
+
       <Layout style={styles.usercontainer}>
-        <FontAwesome5
+        <FontAwesome.Button
+          onPress={() =>
+            navigation.navigate(userData.data.token ? 'LoggedIn' : 'Login')
+          }
           name="user-circle"
           size={40}
           color="#1a1a1a"
@@ -20,7 +30,7 @@ export default function Header() {
       </Layout>
     </Layout>
   );
-}
+});
 
 const styles = StyleSheet.create({
   logo: {
@@ -29,27 +39,28 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f2f2',
   },
   logocontainer: {
-    flex: 1.95,
+    flex: 1,
     width: '100%',
-    alignSelf: 'flex-end',
-    alignItems: 'flex-end',
+    alignSelf: 'center',
+    alignItems: 'center',
     backgroundColor: '#f2f2f2',
   },
   container: {
     flexDirection: 'row',
     display: 'flex',
-    marginTop: 32,
-    marginBottom: 20,
+    marginTop: 40,
+    marginBottom: 5,
     backgroundColor: '#f2f2f2',
   },
   usercontainer: {
-    flex: 1,
-    alignSelf: 'flex-end',
-    alignItems: 'flex-end',
-    marginRight: 20,
+    position: 'absolute',
+    left: '85%',
     backgroundColor: '#f2f2f2',
+    top: -12,
   },
   user: {
-    flex: 1,
+    backgroundColor: '#f2f2f2',
   },
 });
+
+export default Header;

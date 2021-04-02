@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "app",
-    "slug": "app",
+    "name": "Do RH",
+    "slug": "dorh",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon_sized.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#D31B28"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -21,14 +21,15 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "codandosonhos.dorh"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "androidStatusBar": {
       "backgroundColor": "#D31B28",
-      "translucent": "false"
+      "translucent": false
     }
   }
 }

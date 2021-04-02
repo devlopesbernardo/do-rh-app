@@ -10,25 +10,43 @@ const Icon = (props) => {
     <Ionicons name="checkmark-circle" size={22} color="white" />
   );
 };
-const IconRed = (props) => {
-  return props.size ? (
-    <Ionicons name="checkmark-circle" size={props.size} color="#D31B28" />
-  ) : (
-    <Ionicons name="checkmark-circle" size={22} color="#D31B28" />
-  );
-};
 
 import { Layout, Button, Text } from '@ui-kitten/components';
 export default function ButtonRH(props) {
+  let IconRed;
+  if (props.accessory) {
+    IconRed = (props) => {
+      //default = 22
+      return props.size ? (
+        <Ionicons name="checkmark-circle" size={props.size} color="#D31B28" />
+      ) : (
+        <Ionicons name="checkmark-circle" size={22} color="#D31B28" />
+      );
+    };
+  } else {
+    IconRed = (props) => {
+      return null;
+    };
+  }
   const navigation = useNavigation();
 
+  const handlePress = () => {
+    props.onPress?.();
+  };
+  let service = props.service;
   console.log(props.route);
   return (
     <Layout style={[props.style]}>
       <Button
         style={[styles.insideButton, props.buttonStyle]}
         accessoryLeft={props.red ? IconRed : Icon}
-        onPress={() => navigation.navigate(props.route)}
+        onPress={
+          props.route == undefined
+            ? () => {
+                handlePress();
+              }
+            : () => navigation.navigate(props.route, { service })
+        }
       >
         <Text style={[styles.text, props.fontSize]}>{props.text}</Text>
       </Button>

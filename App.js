@@ -8,6 +8,12 @@ import { ApplicationProvider, Layout } from '@ui-kitten/components';
 
 import Revisao from './pages/Revisao';
 import DetalhesTemplate from './templates/DetalhesTemplate';
+import ParabensTemplate from './templates/ParabensTemplate';
+import EnviadoTemplate from './templates/EnviadoTemplate';
+import Login from './pages/Login';
+import LoggedIn from './pages/LoggedIn';
+import Register from './pages/Register';
+import PlanTemplate from './templates/PlanTemplate';
 
 const Stack = createStackNavigator();
 
@@ -24,6 +30,13 @@ function App() {
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Revisao" component={Revisao} />
         <Stack.Screen name="Detalhes" component={DetalhesTemplate} />
+        <Stack.Screen name="Parabens" component={ParabensTemplate} />
+        <Stack.Screen name="Enviado" component={EnviadoTemplate} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="Plan" component={PlanTemplate} />
+
+        <Stack.Screen name="LoggedIn" component={LoggedIn} />
       </Stack.Navigator>
     </NavigationContainer>
   );

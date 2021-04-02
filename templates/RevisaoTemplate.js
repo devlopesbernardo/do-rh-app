@@ -14,9 +14,14 @@ import BannerRevisao from '../assets/BannerRevisao.jpg';
 import ButtonRH from '../atoms/Button';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import userData from '../UserStore';
+export default function RevisaoTemplate(props) {
+  const navigation = useNavigation();
+  const route = useRoute();
 
-export default function RevisaoTemplate() {
-  const route = 'Detalhes';
+  let plan = userData.plans[route.params.service - 1];
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.image}>
@@ -36,7 +41,7 @@ export default function RevisaoTemplate() {
                 style={styles.arrow}
               />
             </View>
-            <Text style={styles.headerText}>Revisão Curricular</Text>
+            <Text style={styles.headerText}>{plan.nome}</Text>
           </View>
         </ImageBackground>
       </View>
@@ -52,7 +57,8 @@ export default function RevisaoTemplate() {
         </Text>
         <View style={styles.parentbutton}>
           <ButtonRH
-            route={route}
+            route={'Detalhes'}
+            service={userData.plans[route.params.service - 1]}
             text="Contratar"
             style={styles.button}
             buttonStyle={styles.buttonStyle}
@@ -83,6 +89,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     marginTop: 35,
     flexDirection: 'column',
+    height: '100%',
+    // backgroundColor: 'green',
   },
   headerTop: {
     display: 'flex',
@@ -95,7 +103,7 @@ const styles = StyleSheet.create({
   headerText: {
     color: 'white',
     fontFamily: 'Poppins_700Bold',
-    fontSize: 20,
+    fontSize: 18,
     flex: 2,
     alignSelf: 'center',
     textAlign: 'center',
@@ -133,6 +141,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: '5%',
     bottom: 10,
+    height: 520,
   },
   h1: {
     fontFamily: 'Poppins_800ExtraBold',
@@ -146,6 +155,7 @@ const styles = StyleSheet.create({
   parentbutton: {
     flex: 1,
     marginTop: 20,
+    backgroundColor: 'white',
   },
 
   button: {
