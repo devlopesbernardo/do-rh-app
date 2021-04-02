@@ -1,27 +1,34 @@
 import { view } from '@risingstack/react-easy-state';
 import React from 'react';
 import { View, Text, StyleSheet, Image, Alert } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+
 import {
   ScrollView,
   TextInput,
   TouchableOpacity,
 } from 'react-native-gesture-handler';
 import planDetails from '../assets/PlanDetails.png';
-import { Calendar, CheckBox, Layout, Modal } from '@ui-kitten/components';
+import {
+  Calendar,
+  CheckBox,
+  Layout,
+  Modal,
+  IndexPath,
+  Select,
+  SelectItem,
+} from '@ui-kitten/components';
 import { Feather } from '@expo/vector-icons';
 import ModalCalendar from '../components/ModalCalendar';
 import userData from '../UserStore';
+import axios from 'axios';
 
 const PlanTemplate = view(() => {
   const [checked, setChecked] = React.useState(false);
   const [career, setCareer] = React.useState('');
   const [link, setLink] = React.useState('');
   const [modalOpener, setModalOpener] = React.useState(false);
-  //   const [date1, setDate1] = React.useState(new Date());
-  //   const [date2, setDate2] = React.useState(new Date());
-  //   const [date3, setDate3] = React.useState(new Date());
-
-  //   console.log(date);
+  const [selectedLanguage, setSelectedLanguage] = React.useState();
 
   const ids = [0, 1, 2];
   const [idClicked, setIdClicked] = React.useState(0);
@@ -33,8 +40,8 @@ const PlanTemplate = view(() => {
   const openFunction = (id) => {
     setIdClicked(id);
     setModalOpener(true);
+    axios({ method: 'POST', url: 'http://localhost:3333/datas', data: {} });
   };
-  console.log(idClicked);
 
   console.log(userData.calendarDate);
   return (
@@ -131,6 +138,22 @@ const PlanTemplate = view(() => {
                     : Object.values(userData.calendarDate[id].toLocaleString())}
                 </Text>
               </TouchableOpacity>
+              {userData.calendarDate[id] && (
+                <View style={styles.datePicker}>
+                  <Text style={styles.textPicker}>Horário escolhido</Text>
+                  <Picker
+                    style={styles.select}
+                    selectedValue={selectedLanguage}
+                    onValueChange={(itemValue, itemIndex) =>
+                      setSelectedLanguage(itemValue)
+                    }
+                  >
+                    {userData.calendarOptions.map((hour) => (
+                      <Picker.Item label={hour} value={hour} />
+                    ))}
+                  </Picker>
+                </View>
+              )}
             </>
           );
         })}
@@ -297,6 +320,22 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignContent: 'center',
     justifyContent: 'center',
+  },
+  select: {
+    maxWidth: 150,
+    backgroundColor: 'white',
+    flex: 1,
+  },
+  datePicker: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginBottom: 15,
+  },
+  textPicker: {
+    flex: 1,
+    textAlignVertical: 'center',
+    fontSize: 16,
+    fontFamily: 'Poppins_400Regular',
   },
 });
 

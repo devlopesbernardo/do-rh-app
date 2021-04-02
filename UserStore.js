@@ -7,6 +7,8 @@ const userData = store({
     this.data = {};
   },
   calendarDate: [],
+  calendarOptions: [],
+  calendarHour: [],
 });
 
 export default userData;
