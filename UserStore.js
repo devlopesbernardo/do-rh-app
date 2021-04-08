@@ -9,6 +9,7 @@ const userData = store({
   calendarDate: [],
   calendarOptions: [],
   calendarHour: [],
+  selectedPlan: {},
 });
 
 export default userData;

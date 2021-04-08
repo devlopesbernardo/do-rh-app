@@ -19,7 +19,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import userData from '../UserStore';
 import axios from 'axios';
 
-const url = 'http://209.126.2.112:3333';
+const url = 'http://10.0.2.2:3333';
 export default function DetalhesTemplate() {
   const [logged, setLogged] = React.useState(1);
   const navigation = useNavigation();

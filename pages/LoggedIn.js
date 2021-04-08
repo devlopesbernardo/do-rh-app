@@ -23,6 +23,14 @@ const LoggedIn = view(() => {
 
   let [plans, setPlans] = React.useState([]);
 
+  const call = (plan) => {
+    console.log('oi', plan);
+    userData.selectedPlan = plan;
+    userData.selectedPlan.isEditing = true;
+
+    navigation.navigate('Plan');
+  };
+
   const fetchName = async () => {
     try {
       const fullName = await axios({
@@ -193,7 +201,7 @@ const LoggedIn = view(() => {
                   )}
                 </View>
                 <ButtonRH
-                  route={''}
+                  // route={'Plan'}
                   text={
                     plan.pending
                       ? 'Enviar arquivos'
@@ -201,6 +209,7 @@ const LoggedIn = view(() => {
                   }
                   style={styles.button}
                   red={true}
+                  onPress={() => call(plan)}
                   buttonStyle={styles.buttonStyle}
                   fontSize={{
                     fontSize: 14,

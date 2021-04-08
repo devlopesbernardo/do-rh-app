@@ -110,6 +110,7 @@ export default function HomeScreen({ navigation }) {
   ];
 
   userData.plans = services;
+  userData.selectedPlan = {};
   console.log(userData.plans);
 
   return (

@@ -84,7 +84,7 @@ const PlanTemplate = view(() => {
           accept: '*/*',
           Authorization: `Bearer ${userData.data.token}`,
         },
-        url: 'http://209.126.2.112:3333/plan/editar',
+        url: 'http://10.0.2.2:3333/plan/editar',
         data: {
           id: userData.selectedPlan.id,
           user_comments: career,
@@ -120,7 +120,7 @@ const PlanTemplate = view(() => {
     try {
       const send = await axios({
         method: 'POST',
-        url: 'http://209.126.2.112:3333/file/envio-curriculo',
+        url: 'http://10.0.2.2:3333/file/envio-curriculo',
         headers: {
           'content-type': 'multipart/form-data',
           Authorization: `Bearer ${userData.data.token}`,
