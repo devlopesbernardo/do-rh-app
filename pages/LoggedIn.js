@@ -24,11 +24,12 @@ const LoggedIn = view(() => {
   let [plans, setPlans] = React.useState([]);
 
   const call = (plan) => {
+    const p = new Promise((resolve) => {
+      userData.selectedPlan = plan;
+      userData.selectedPlan.isEditing = true;
+      resolve();
+    }).then((r) => navigation.navigate('Plan'));
     console.log('oi', plan);
-    userData.selectedPlan = plan;
-    userData.selectedPlan.isEditing = true;
-
-    navigation.navigate('Plan');
   };
 
   const fetchName = async () => {

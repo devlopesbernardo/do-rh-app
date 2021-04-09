@@ -68,6 +68,10 @@ export default function DetalhesTemplate() {
           <ButtonRH
             //route={'Parabens'}
             onPress={async () => {
+              Alert.alert(
+                'PAGOU',
+                'Essa tela será substituida pela Google/Apple',
+              );
               if (logged) {
                 const setPlan = await axios({
                   method: 'post',

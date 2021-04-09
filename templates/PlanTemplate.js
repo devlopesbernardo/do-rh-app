@@ -3,7 +3,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import * as DocumentPicker from 'expo-document-picker';
-
+import { useNavigation } from '@react-navigation/native';
 import {
   ScrollView,
   TextInput,
@@ -18,15 +18,18 @@ import axios from 'axios';
 import ButtonRH from '../atoms/Button';
 
 const PlanTemplate = view(() => {
+  console.log('ola meu nome eh eu', pdf);
+
+  const navigation = useNavigation();
+
   const [checked, setChecked] = React.useState(false);
   const [career, setCareer] = React.useState('');
   const [link1, setLink1] = React.useState('');
   const [link2, setLink2] = React.useState('');
   const [link3, setLink3] = React.useState('');
-
+  const [loading, setLoading] = React.useState(false);
   const [modalOpener, setModalOpener] = React.useState(false);
-  const [selectedLanguage, setSelectedLanguage] = React.useState();
-  const [pdf, setPdf] = React.useState();
+  const [pdf, setPdf] = React.useState('');
   const [numberOfForms, setNumberOfForms] = React.useState([]);
   const [isEditing, setEditing] = React.useState(false);
   const [idClicked, setIdClicked] = React.useState(0);
@@ -34,7 +37,7 @@ const PlanTemplate = view(() => {
 
   React.useEffect(() => {
     userData.calendarDate = [];
-
+    setLoading(true);
     if (userData.selectedPlan.plan_id === 2) {
       setNumberOfForms([0, 1]);
     }
@@ -44,7 +47,6 @@ const PlanTemplate = view(() => {
     if (userData.selectedPlan.isEditing === true) {
       setEditing(true);
     }
-
     if (isEditing && !pdf) {
       setFilename(`${userData.selectedPlan.file_name.slice(0, 15)}...`);
     }
@@ -52,27 +54,72 @@ const PlanTemplate = view(() => {
       setFilename('Envie um arquivo');
     }
 
-    if (isEditing) {
+    console.log(userData.selectedPlan.links);
+
+    if (userData.selectedPlan.links) {
+      console.log('CHEGUEI');
       setLink1(Object.values(userData.selectedPlan.links)[0]);
       setLink2(Object.values(userData.selectedPlan.links)[1]);
       setLink3(Object.values(userData.selectedPlan.links)[2]);
+      console.log('aqui, porra', link1);
     }
+    setLoading(false);
   }, []);
 
   const openFunction = (id) => {
     setIdClicked(id);
     setModalOpener(true);
   };
+  console.log('date', userData.calendarDate);
+  console.log('hour', userData.calendarHour);
+
+  const buttonClicked = async () => {
+    userData.calendarDate.map(async (data, index) => {
+      let picked_data = `${data.toJSON().split('T')[0]}T${
+        userData.calendarHour[index]
+      }`;
+      console.log(picked_data);
+      try {
+        const send = await axios({
+          method: 'POST',
+          url: 'http://209.126.2.112:3333/marcar',
+          headers: {
+            'content-type': 'application/json;charset=utf-8',
+            accept: '*/*',
+            Authorization: `Bearer ${userData.data.token}`,
+          },
+          data: {
+            plan_id: userData.selectedPlan.plan_id,
+            hour: picked_data,
+            title: 'Encontro com o Leo',
+          },
+        });
+        const response = await send.data;
+        //console.log('oi', response);
+      } catch (e) {
+        console.log(e);
+      }
+    });
+  };
 
   const pickPdf = async () => {
-    const result = await DocumentPicker.getDocumentAsync({});
+    const result = await DocumentPicker.getDocumentAsync({})
+      .then((p) => {
+        setPdf(p), setFilename(`${p.name.slice(0, 15)}...`);
+      })
+      .catch((e) => console.log(e));
     console.log('result', result);
-    if (!result.cancelled) {
-      setPdf(result);
-      console.log(result);
-      setFilename(`${pdf.name.slice(0, 15)}...`);
-      //await sendPdf();
-    }
+
+    // if (!result.cancelled) {
+    //   try {
+    //     setPdf(result);
+    //     console.log(result);
+    //     setFilename(`${pdf.name.slice(0, 15)}...`);
+    //   } catch (e) {
+    //     console.log(e);
+    //   }
+    //   //await sendPdf();
+    // }
   };
 
   const sendInfos = async () => {
@@ -93,7 +140,7 @@ const PlanTemplate = view(() => {
             2: link2,
             3: link3,
           },
-          file_name: pdf !== null || pdf !== undefined ? pdf.name : null,
+          //file_name: pdf !== null || pdf !== undefined ? pdf.name : null,
           pending: false,
         },
       });
@@ -101,8 +148,11 @@ const PlanTemplate = view(() => {
       if (pdf) {
         await sendPdf();
       }
+      if (userData.calendarDate) {
+        await buttonClicked();
+      }
       console.log('oi', response);
-      console.log('puxar para outra pagina');
+      navigation.navigate('Enviado');
     } catch (e) {
       console.log(e);
     }
@@ -134,8 +184,22 @@ const PlanTemplate = view(() => {
     }
   };
 
-  console.log(isEditing);
-  return (
+  console.log('ta editando e', isEditing);
+  return loading ? (
+    <Layout style={styles.loading}>
+      <ActivityIndicator size={200} style={styles.spinner} color="#D31B28" />
+      <Text style={styles.h1}>Carregando dados....</Text>
+      <Text
+        style={styles.h2}
+        onPress={async () => {
+          await AsyncStorage.removeItem('@rhToken');
+          setLoading(false);
+        }}
+      >
+        Se preferir cancelar o login automático, clique aqui
+      </Text>
+    </Layout>
+  ) : (
     <ScrollView
       style={styles.main}
       contentContainerStyle={{
@@ -244,9 +308,9 @@ const PlanTemplate = view(() => {
                     <Text style={styles.textPicker}>Horário escolhido</Text>
                     <Picker
                       style={styles.select}
-                      selectedValue={selectedLanguage}
+                      selectedValue={userData.calendarHour[id]}
                       onValueChange={(itemValue, itemIndex) =>
-                        setSelectedLanguage(itemValue)
+                        (userData.calendarHour[id] = itemValue)
                       }
                     >
                       {userData.calendarOptions.map((hour) => (
@@ -262,6 +326,7 @@ const PlanTemplate = view(() => {
       ) : null}
       <View style={styles.parentbutton}>
         <ButtonRH
+          //onPress={() => buttonClicked()}
           onPress={() => sendInfos()}
           text="Confirmar envio"
           style={styles.button}
@@ -270,7 +335,7 @@ const PlanTemplate = view(() => {
           size="22"
         />
         <ButtonRH
-          route={'Parabens'}
+          route={'Home'}
           text="Enviar depois"
           style={styles.outlineButton}
           red={true}

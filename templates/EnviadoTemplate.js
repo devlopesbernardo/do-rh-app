@@ -19,7 +19,7 @@ export default function EnviadoTemplate() {
       </Text>
       <View style={styles.parentbutton}>
         <ButtonRH
-          route={route}
+          route={'Home'}
           text="Voltar ao início"
           style={styles.button}
           buttonStyle={styles.buttonStyle}
@@ -27,7 +27,7 @@ export default function EnviadoTemplate() {
           size="22"
         />
         <ButtonRH
-          route={route}
+          route={'LoggedIn'}
           text="Ir para meu perfil"
           style={styles.outlineButton}
           red={true}
