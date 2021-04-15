@@ -14,7 +14,7 @@ export default function SingleService(props) {
   return (
     <Layout style={styles.container}>
       <Layout style={styles.imageContainer}>
-        <Image source={prod} style={styles.image} />
+        <Image source={props.image} style={styles.image} />
       </Layout>
       <Layout style={styles.texts}>
         <Text style={styles.h5}>{props.service}</Text>

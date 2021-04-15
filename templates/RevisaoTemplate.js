@@ -27,7 +27,7 @@ export default function RevisaoTemplate(props) {
       <View style={styles.image}>
         <ImageBackground
           style={styles.bg}
-          source={BannerRevisao}
+          source={userData.plans[route.params.service - 1].image}
           imageStyle={{ transform: [{ rotateY: '180deg' }] }}
         >
           <Layout style={styles.overlay} />
@@ -48,12 +48,14 @@ export default function RevisaoTemplate(props) {
       <View style={styles.description}>
         <Text style={styles.h1}>Descrição do produto</Text>
         <Text style={styles.h4}>
-          Nisi, ultrices augue mollis tempus in. Nec eget nulla vitae lorem orci
+          {userData.plans[route.params.service - 1].detalhes
+            ? userData.plans[route.params.service - 1].detalhes
+            : `Nisi, ultrices augue mollis tempus in. Nec eget nulla vitae lorem orci
           nisi. Ac lacus lectus tempus egestas sed. At accumsan semper mi
           faucibus lacus. Ultricies nunc dolor odio amet neque, vel orci lacus.
           Semper a, amet id semper. Quam consequat at duis lorem pellentesque
           elementum aliquam pellentesque. Vulputate molestie pellentesque enim,
-          sit nunc nunc.
+          sit nunc nunc.`}
         </Text>
         <View style={styles.parentbutton}>
           <ButtonRH
