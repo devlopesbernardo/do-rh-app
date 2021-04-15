@@ -6,6 +6,7 @@ import {
   Text,
   View,
   Image,
+  Alert,
 } from 'react-native';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Layout } from '@ui-kitten/components';
@@ -16,9 +17,113 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import userData from '../UserStore';
+import axios from 'axios';
+import * as InAppPurchases from 'expo-in-app-purchases';
+
 export default function RevisaoTemplate(props) {
+  const [logged, setLogged] = React.useState(1);
+  const [pago, setPago] = React.useState(false);
+  const [falha, setFalha] = React.useState();
+  const [items, setItems] = React.useState();
+  const url = 'http://209.126.2.112:3333';
   const navigation = useNavigation();
   const route = useRoute();
+
+  React.useEffect(() => {
+    if (userData.data.token) {
+      setLogged(1);
+    } else {
+      setLogged(0);
+    }
+    if (logged) {
+      try {
+        runFunc();
+      } catch (e) {
+        Alert.alert(e);
+      }
+    }
+    console.log(
+      'selected',
+      userData.plans[route.params.service].id - 1,
+      userData.selectedPlan,
+    );
+  }, []);
+
+  async function writeDb() {
+    const setPlan = await axios({
+      method: 'post',
+      headers: {
+        'content-type': 'application/json;charset=utf-8',
+        accept: '*/*',
+        Authorization: `Bearer ${userData.data.token}`,
+      },
+      url: `${url}/plan/analise-curricular`,
+      data: {
+        plan_name: `${plan.nome}`,
+        plan_id: userData.plans[route.params.service].id - 1,
+        links: { abc: 'dorh.com' },
+        user_comments: 'Segue meu currículo!',
+        pending: true,
+      },
+    });
+    let data = await setPlan.data;
+    console.log(data);
+    navigation.navigate('Plan');
+    userData.selectedPlan = data;
+  }
+
+  async function runFunc() {
+    const itemSkus = Platform.select({
+      ios: [
+        'plano1', // just remove bundle id from product id
+      ],
+      android: [
+        'plano1',
+        'plano2', // just remove bundle id from product id
+      ],
+    });
+    const { responseCode, results } = await InAppPurchases.getProductsAsync(
+      itemSkus,
+    );
+    //console.log('ola', results);
+    if (responseCode === InAppPurchases.IAPResponseCode.OK) {
+      setItems(results);
+      //console.log('items', results);
+    } else {
+      console.log('deu erro', responseCode);
+    }
+  }
+  // Set purchase listener
+  InAppPurchases.setPurchaseListener(({ responseCode, results, errorCode }) => {
+    // Purchase was successful
+    if (responseCode === InAppPurchases.IAPResponseCode.OK) {
+      results.forEach((purchase) => {
+        if (!purchase.acknowledged) {
+          console.log(`Successfully purchased ${purchase.productId}`);
+          // Process transaction here and unlock content...
+          setPago(true);
+          console.log('oi');
+          console.log(pago);
+          // Then when you're done
+          InAppPurchases.finishTransactionAsync(purchase, true);
+        }
+      });
+      writeDb();
+    }
+
+    // Else find out what went wrong
+    if (responseCode === InAppPurchases.IAPResponseCode.USER_CANCELED) {
+      console.log('User canceled the transaction');
+    } else if (responseCode === InAppPurchases.IAPResponseCode.DEFERRED) {
+      console.log(
+        'User does not have permissions to buy but requested parental approval (iOS only)',
+      );
+    } else {
+      console.warn(
+        `Something went wrong with the purchase. Received errorCode ${errorCode}`,
+      );
+    }
+  });
 
   let plan = userData.plans[route.params.service - 1];
 
@@ -59,8 +164,23 @@ export default function RevisaoTemplate(props) {
         </Text>
         <View style={styles.parentbutton}>
           <ButtonRH
-            route={'Detalhes'}
-            service={userData.plans[route.params.service - 1]}
+            onPress={async () => {
+              if (logged) {
+                try {
+                  const purchase = await InAppPurchases.purchaseItemAsync(
+                    'plano1',
+                  );
+                } catch (e) {
+                  console.log(e);
+                }
+              } else {
+                Alert.alert(
+                  'Você não está logado',
+                  'Por favor, se autentique antes de comprar',
+                );
+              }
+            }}
+            //service={userData.plans[route.params.service - 1]}
             text="Contratar"
             style={styles.button}
             buttonStyle={styles.buttonStyle}

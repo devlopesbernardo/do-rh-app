@@ -35,67 +35,14 @@ export default function HomeScreen({ navigation }) {
     async function connection() {
       try {
         const connect = await InAppPurchases.connectAsync();
-        await runFunc();
 
         //console.log('conectado', connect);
       } catch (e) {
         console.log(e);
-        runFunc();
       }
     }
     connection();
   }, []);
-
-  async function runFunc() {
-    const itemSkus = Platform.select({
-      ios: [
-        'plano1', // just remove bundle id from product id
-      ],
-      android: [
-        'plano1',
-        'plano2', // just remove bundle id from product id
-      ],
-    });
-    const { responseCode, results } = await InAppPurchases.getProductsAsync(
-      itemSkus,
-    );
-    console.log('ola', results);
-    if (responseCode === InAppPurchases.IAPResponseCode.OK) {
-      setItems(results);
-      console.log('items', results);
-    } else {
-      console.log('deu erro', responseCode);
-    }
-  }
-
-  // Set purchase listener
-  InAppPurchases.setPurchaseListener(({ responseCode, results, errorCode }) => {
-    // Purchase was successful
-    if (responseCode === InAppPurchases.IAPResponseCode.OK) {
-      results.forEach((purchase) => {
-        if (!purchase.acknowledged) {
-          console.log(`Successfully purchased ${purchase.productId}`);
-          // Process transaction here and unlock content...
-
-          // Then when you're done
-          InAppPurchases.finishTransactionAsync(purchase, true);
-        }
-      });
-    }
-
-    // Else find out what went wrong
-    if (responseCode === IAPResponseCode.USER_CANCELED) {
-      console.log('User canceled the transaction');
-    } else if (responseCode === IAPResponseCode.DEFERRED) {
-      console.log(
-        'User does not have permissions to buy but requested parental approval (iOS only)',
-      );
-    } else {
-      console.warn(
-        `Something went wrong with the purchase. Received errorCode ${errorCode}`,
-      );
-    }
-  });
 
   let [fontsLoaded] = useFonts({
     Poppins_100Thin,
@@ -212,14 +159,17 @@ Se você está à procura de recolocação no mercado de trabalho e não quer fa
       <Header />
       <Featured />
       <Text style={styles.h1}>Nossos Serviços</Text>
-      <Button
+      {/* <Button
         text="teste"
         onPress={async () => await InAppPurchases.purchaseItemAsync('plano1')}
-      />
+      /> */}
       {services.map((service) => {
         return (
           <SingleService
             key={service.id}
+            onPress={() => {
+              userData.selectedPlan = service;
+            }}
             id={service.id}
             image={service.image}
             entire_data={service}
