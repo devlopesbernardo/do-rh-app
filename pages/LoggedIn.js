@@ -24,12 +24,17 @@ const LoggedIn = view(() => {
   let [plans, setPlans] = React.useState([]);
 
   const call = (plan) => {
-    const p = new Promise((resolve) => {
+    if (plan.reviewed === true) {
       userData.selectedPlan = plan;
-      userData.selectedPlan.isEditing = true;
-      resolve();
-    }).then((r) => navigation.navigate('Plan'));
-    console.log('oi', plan);
+      navigation.navigate('Feedback');
+    } else {
+      const p = new Promise((resolve) => {
+        userData.selectedPlan = plan;
+        userData.selectedPlan.isEditing = true;
+        resolve();
+      }).then((r) => navigation.navigate('Plan'));
+      console.log('oi', plan);
+    }
   };
 
   const fetchName = async () => {
@@ -206,6 +211,8 @@ const LoggedIn = view(() => {
                   text={
                     plan.pending
                       ? 'Enviar arquivos'
+                      : plan.reviewed
+                      ? 'Visualizar Feedback'
                       : 'Alterar datas de encontros ou anexos'
                   }
                   style={styles.button}
@@ -223,35 +230,6 @@ const LoggedIn = view(() => {
             </View>
           );
         })}
-
-        {/* inicio da segunda view
-        <View style={styles.singlePlan}>
-          <Text style={styles.h5}>Upgrade de apresentação</Text>
-          <Text style={styles.h6}>{`\u2022 Lorem ipsum`}</Text>
-          <Text style={styles.h6}>{`\u2022 Lorem ipsum`}</Text>
-          <View style={styles.status}>
-            <Text style={styles.h3}>Status do serviço</Text>
-            <View style={styles.going}>
-              <Text style={[styles.h5, styles.red]}>Em andamento</Text>
-              <Text style={styles.h6}>Contratado em: 02/03/2021</Text>
-              <Text style={styles.h6}>Retorno em em: 02/03/2021</Text>
-            </View>
-            <ButtonRH
-              route={''}
-              text="Alterar datas de encontros ou anexos"
-              style={styles.button}
-              red={true}
-              buttonStyle={styles.buttonStyle}
-              fontSize={{
-                fontSize: 14,
-                color: 'white',
-                fontFamily: 'Poppins_400Regular',
-              }}
-            />
-            <Text style={styles.cancel}>Cancelar contratação</Text>
-          </View>
-        </View>
-       */}
       </View>
     </ScrollView>
   );

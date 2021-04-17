@@ -44,7 +44,7 @@ export default function RevisaoTemplate(props) {
     }
     console.log(
       'selected',
-      userData.plans[route.params.service].id - 1,
+      userData.plans[route.params.service - 1].id,
       userData.selectedPlan,
     );
   }, []);
@@ -60,9 +60,9 @@ export default function RevisaoTemplate(props) {
       url: `${url}/plan/analise-curricular`,
       data: {
         plan_name: `${plan.nome}`,
-        plan_id: userData.plans[route.params.service].id - 1,
-        links: { abc: 'dorh.com' },
-        user_comments: 'Segue meu currículo!',
+        plan_id: userData.plans[route.params.service - 1].id,
+        links: { 1: 'Insira seus links :D' },
+        user_comments: 'Seu comentário padrão =)',
         pending: true,
       },
     });

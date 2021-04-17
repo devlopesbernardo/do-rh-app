@@ -14,6 +14,7 @@ import Login from './pages/Login';
 import LoggedIn from './pages/LoggedIn';
 import Register from './pages/Register';
 import PlanTemplate from './templates/PlanTemplate';
+import Feedback from './pages/Feedback';
 
 const Stack = createStackNavigator();
 
@@ -35,6 +36,7 @@ function App() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Plan" component={PlanTemplate} />
+        <Stack.Screen name="Feedback" component={Feedback} />
 
         <Stack.Screen name="LoggedIn" component={LoggedIn} />
       </Stack.Navigator>
