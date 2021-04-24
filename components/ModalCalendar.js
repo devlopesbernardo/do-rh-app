@@ -1,9 +1,10 @@
+import { NavigationHelpersContext } from '@react-navigation/native';
 import { view } from '@risingstack/react-easy-state';
 import { Layout, Calendar } from '@ui-kitten/components';
 import axios from 'axios';
 
 import React from 'react';
-import { View, Modal, StyleSheet } from 'react-native';
+import { View, Modal, StyleSheet, Alert } from 'react-native';
 import userData from '../UserStore';
 const ModalCalendar = view((props) => {
   const [calendar, setCalendar] = React.useState(true);
@@ -18,14 +19,28 @@ const ModalCalendar = view((props) => {
           'content-type': 'application/json;charset=utf-8',
           accept: '*/*',
         },
-        url: 'http://209.126.2.112:3333/datas',
+        url: 'https://back.appdorh.com/datas',
         data: {
           hour: userData.calendarDate[id],
         },
       });
       let data = await req.data;
+      if (data.length === 0) {
+        Alert.alert(
+          'Escolha outro dia',
+          'A agenda para essa data já está lotada.',
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                console.log('oi');
+              },
+            },
+          ],
+        );
+      }
       userData.calendarOptions = data;
-      console.log(data);
+      console.log('oi', data);
     } catch (e) {
       console.log(e);
     }

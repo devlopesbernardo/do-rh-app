@@ -19,7 +19,7 @@ import userData from '../UserStore';
 import AppLoading from 'expo-app-loading';
 
 export const Login = view(() => {
-  const url = 'http://209.126.2.112:3333';
+  const url = 'https://back.appdorh.com';
 
   const navigation = useNavigation();
   const route = 'Home';
@@ -31,7 +31,7 @@ export const Login = view(() => {
   // console.log('senha:', senha, 'e-mail:', email);
 
   const login = async () => {
-    const url = 'http://209.126.2.112:3333';
+    const url = 'https://back.appdorh.com';
     let response;
     try {
       response = await axios.post(

@@ -1,5 +1,4 @@
 package codandosonhos.dorh;
-
 import android.app.Application;
 import android.content.Context;
 import android.net.Uri;

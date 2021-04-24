@@ -25,7 +25,7 @@ export default function RevisaoTemplate(props) {
   const [pago, setPago] = React.useState(false);
   const [falha, setFalha] = React.useState();
   const [items, setItems] = React.useState();
-  const url = 'http://209.126.2.112:3333';
+  const url = 'https://back.appdorh.com';
   const navigation = useNavigation();
   const route = useRoute();
 
@@ -64,6 +64,7 @@ export default function RevisaoTemplate(props) {
         links: { 1: 'Insira seus links :D' },
         user_comments: 'Seu comentário padrão =)',
         pending: true,
+        reviewed: false,
       },
     });
     let data = await setPlan.data;
@@ -79,7 +80,10 @@ export default function RevisaoTemplate(props) {
       ],
       android: [
         'plano1',
-        'plano2', // just remove bundle id from product id
+        'plano2',
+        'plano3',
+        'plano4',
+        'plano5', // just remove bundle id from product id
       ],
     });
     const { responseCode, results } = await InAppPurchases.getProductsAsync(
@@ -168,7 +172,7 @@ export default function RevisaoTemplate(props) {
               if (logged) {
                 try {
                   const purchase = await InAppPurchases.purchaseItemAsync(
-                    'plano1',
+                    `plano${route.params.service}`,
                   );
                 } catch (e) {
                   console.log(e);

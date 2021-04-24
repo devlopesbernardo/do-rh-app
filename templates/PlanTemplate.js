@@ -36,13 +36,20 @@ const PlanTemplate = view(() => {
   const [filename, setFilename] = React.useState('');
 
   React.useEffect(() => {
+    console.log('AQUI', userData.selectedPlan.plan_id);
     userData.calendarDate = [];
     setLoading(true);
     if (userData.selectedPlan.plan_id === 2) {
       setNumberOfForms([0, 1]);
     }
-    if (userData.selectedPlan.plan_id > 2) {
+    if (
+      (userData.selectedPlan.plan_id > 2) &
+      (userData.selectedPlan.plan_id !== 5)
+    ) {
       setNumberOfForms([0, 1, 2]);
+    }
+    if (userData.selectedPlan.plan_id === 5) {
+      setNumberOfForms([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
     }
     if (userData.selectedPlan.isEditing === true) {
       setEditing(true);
@@ -69,6 +76,7 @@ const PlanTemplate = view(() => {
   const openFunction = (id) => {
     setIdClicked(id);
     setModalOpener(true);
+    console.log(id, 'id');
   };
   console.log('date', userData.calendarDate);
   console.log('hour', userData.calendarHour);
@@ -82,16 +90,17 @@ const PlanTemplate = view(() => {
       try {
         const send = await axios({
           method: 'POST',
-          url: 'http://209.126.2.112:3333/marcar',
+          url: 'https://back.appdorh.com/marcar',
           headers: {
             'content-type': 'application/json;charset=utf-8',
             accept: '*/*',
             Authorization: `Bearer ${userData.data.token}`,
           },
           data: {
-            plan_id: userData.selectedPlan.plan_id,
+            plan_id: userData.selectedPlan.id,
             hour: picked_data,
-            title: 'Encontro com o Leo',
+            title: `Encontro: Leo e ${userData.data.full_name}`,
+            user_id: userData.data.id,
           },
         });
         const response = await send.data;
@@ -110,51 +119,67 @@ const PlanTemplate = view(() => {
       .catch((e) => console.log(e));
     console.log('result', result);
 
-    // if (!result.cancelled) {
-    //   try {
-    //     setPdf(result);
-    //     console.log(result);
-    //     setFilename(`${pdf.name.slice(0, 15)}...`);
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
-    //   //await sendPdf();
-    // }
+    if (!result.cancelled) {
+      try {
+        setPdf(result);
+        console.log(result);
+        setFilename(`${pdf.name.slice(0, 15)}...`);
+      } catch (e) {
+        console.log(e);
+      }
+      await sendPdf();
+    }
   };
 
   const sendInfos = async () => {
-    try {
-      const data = await axios({
-        method: 'PUT',
-        headers: {
-          'content-type': 'application/json;charset=utf-8',
-          accept: '*/*',
-          Authorization: `Bearer ${userData.data.token}`,
-        },
-        url: 'http://209.126.2.112:3333/plan/editar',
-        data: {
-          id: userData.selectedPlan.id,
-          user_comments: career,
-          links: {
-            1: link1,
-            2: link2,
-            3: link3,
+    if (userData.selectedPlan.plan_id !== 5) {
+      try {
+        const data = await axios({
+          method: 'PUT',
+          headers: {
+            'content-type': 'application/json;charset=utf-8',
+            accept: '*/*',
+            Authorization: `Bearer ${userData.data.token}`,
           },
-          //file_name: pdf !== null || pdf !== undefined ? pdf.name : null,
-          pending: false,
-        },
-      });
-      const response = await data.data;
-      if (pdf) {
-        await sendPdf();
+          url: 'https://back.appdorh.com/plan/editar',
+          data: {
+            id: userData.selectedPlan.id,
+            user_comments: career,
+            links: {
+              1: link1,
+              2: link2,
+              3: link3,
+            },
+            file_name: pdf !== null || pdf !== undefined ? pdf.name : null,
+            pending: false,
+          },
+        });
+        const response = await data.data;
+        if (pdf) {
+          await sendPdf();
+        }
+        if (userData.calendarDate) {
+          if (userData.calendarDate.includes(undefined)) {
+            Alert.alert('Existem horários não marcados...');
+          } else {
+            await buttonClicked();
+          }
+        }
+        console.log('oi', response);
+        navigation.navigate('Enviado');
+      } catch (e) {
+        console.log(e);
       }
-      if (userData.calendarDate) {
+    } else {
+      if (
+        userData.calendarDate.includes(undefined) ||
+        userData.calendarDate.length !== 10
+      ) {
+        Alert.alert('Existem horários não marcados...');
+      } else {
         await buttonClicked();
+        navigation.navigate('Enviado');
       }
-      console.log('oi', response);
-      navigation.navigate('Enviado');
-    } catch (e) {
-      console.log(e);
     }
   };
 
@@ -170,7 +195,7 @@ const PlanTemplate = view(() => {
     try {
       const send = await axios({
         method: 'POST',
-        url: 'http://209.126.2.112:3333/file/envio-curriculo',
+        url: 'https://back.appdorh.com/file/envio-curriculo',
         headers: {
           'content-type': 'multipart/form-data',
           Authorization: `Bearer ${userData.data.token}`,
@@ -211,78 +236,85 @@ const PlanTemplate = view(() => {
       <View style={styles.imageParent}>
         <Image source={planDetails} style={styles.image} />
       </View>
-      <View style={styles.section1}>
-        <Text style={styles.h1}>Envio de informações</Text>
-        <View style={styles.selecionar} onTouchStart={() => pickPdf()}>
-          <Feather
-            name="log-out"
-            //backgroundColor="rgba(0, 0, 0, 0.0)"
-            size={30}
-            color="#D31B28"
-            style={styles.icon}
-          />
-          <Text style={styles.hButton}>{filename}</Text>
-        </View>
-        <View style={styles.checkView}>
-          <CheckBox
-            checked={checked}
-            onChange={(nextChecked) => setChecked(nextChecked)}
-            style={styles.check}
-          />
-          <Text style={styles.textCheck}>
-            Marque essa caixa caso não tenha currículo e/ou queira fazer do
-            zero.
-          </Text>
-        </View>
-      </View>
-      <View style={styles.section2}>
-        <Text style={styles.bold}>
-          Conte um pouco sobre sua atuação situação e seus objetivos de carreira
-        </Text>
-        <TextInput
-          multiline={true}
-          numberOfLines={4}
-          onChangeText={(text) => setCareer(text)}
-          scrollEnabled={true}
-          value={career}
-          style={styles.career}
-          placeholder={
-            !isEditing
-              ? 'Nos conte sobre sua carreira!'
-              : userData.selectedPlan.user_comments !== null ||
-                userData.selectedPlan.user_comments !== undefined
-              ? userData.selectedPlan.user_comments
-              : 'Nos conte sobre a sua carreira'
-          }
-          placeholderTextColor="grey"
-        />
-      </View>
-      <View style={styles.section3}>
-        <Text style={styles.bold}>
-          Deseja anexar links? (Linkedin, site pessoal, etc.)
-        </Text>
-        <TextInput
-          onChangeText={(text) => setLink1(text)}
-          value={link1}
-          style={styles.link}
-          placeholder={isEditing ? link1 : 'Link 1'}
-          placeholderTextColor="grey"
-        />
-        <TextInput
-          onChangeText={(text) => setLink2(text)}
-          value={link2}
-          style={styles.link}
-          placeholder="Link 1"
-          placeholderTextColor="grey"
-        />
-        <TextInput
-          onChangeText={(text) => setLink3(text)}
-          value={link3}
-          style={styles.link}
-          placeholder="Link 1"
-          placeholderTextColor="grey"
-        />
-      </View>
+      <Text style={styles.h1}>Envio de informações</Text>
+
+      {userData.selectedPlan.plan_id !== 5 ? (
+        <>
+          <View style={styles.section1}>
+            <View style={styles.selecionar} onTouchStart={() => pickPdf()}>
+              <Feather
+                name="log-out"
+                //backgroundColor="rgba(0, 0, 0, 0.0)"
+                size={30}
+                color="#D31B28"
+                style={styles.icon}
+              />
+              <Text style={styles.hButton}>{filename}</Text>
+            </View>
+            <View style={styles.checkView}>
+              <CheckBox
+                checked={checked}
+                onChange={(nextChecked) => setChecked(nextChecked)}
+                style={styles.check}
+              />
+              <Text style={styles.textCheck}>
+                Marque essa caixa caso não tenha currículo e/ou queira fazer do
+                zero.
+              </Text>
+            </View>
+          </View>
+          <View style={styles.section2}>
+            <Text style={styles.bold}>
+              Conte um pouco sobre sua atuação situação e seus objetivos de
+              carreira
+            </Text>
+            <TextInput
+              multiline={true}
+              numberOfLines={4}
+              onChangeText={(text) => setCareer(text)}
+              scrollEnabled={true}
+              value={career}
+              style={styles.career}
+              placeholder={
+                !isEditing
+                  ? 'Nos conte sobre sua carreira!'
+                  : userData.selectedPlan.user_comments !== null ||
+                    userData.selectedPlan.user_comments !== undefined
+                  ? userData.selectedPlan.user_comments
+                  : 'Nos conte sobre a sua carreira'
+              }
+              placeholderTextColor="grey"
+            />
+          </View>
+
+          <View style={styles.section3}>
+            <Text style={styles.bold}>
+              Deseja anexar links? (Linkedin, site pessoal, etc.)
+            </Text>
+            <TextInput
+              onChangeText={(text) => setLink1(text)}
+              value={link1}
+              style={styles.link}
+              placeholder={isEditing ? link1 : 'Link 1'}
+              placeholderTextColor="grey"
+            />
+            <TextInput
+              onChangeText={(text) => setLink2(text)}
+              value={link2}
+              style={styles.link}
+              placeholder="Link 1"
+              placeholderTextColor="grey"
+            />
+            <TextInput
+              onChangeText={(text) => setLink3(text)}
+              value={link3}
+              style={styles.link}
+              placeholder="Link 1"
+              placeholderTextColor="grey"
+            />
+          </View>
+        </>
+      ) : null}
       {userData.selectedPlan && userData.selectedPlan.plan_id !== 1 ? (
         <View style={styles.section4}>
           <Text style={styles.bold}>Datas para encontros</Text>
@@ -313,9 +345,11 @@ const PlanTemplate = view(() => {
                         (userData.calendarHour[id] = itemValue)
                       }
                     >
-                      {userData.calendarOptions.map((hour) => (
-                        <Picker.Item label={hour} value={hour} />
-                      ))}
+                      {userData.calendarOptions.length !== 0
+                        ? userData.calendarOptions.map((hour) => (
+                            <Picker.Item label={hour} value={hour} />
+                          ))
+                        : null}
                     </Picker>
                   </View>
                 )}

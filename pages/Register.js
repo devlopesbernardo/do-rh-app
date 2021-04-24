@@ -19,7 +19,7 @@ import userData from '../UserStore';
 import AppLoading from 'expo-app-loading';
 
 export const Register = view(() => {
-  const url = 'http://209.126.2.112:3333';
+  const url = 'https://back.appdorh.com';
 
   const navigation = useNavigation();
   const route = 'Home';

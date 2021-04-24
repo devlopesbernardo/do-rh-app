@@ -27,10 +27,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import userData from '../UserStore';
 import Button from '../atoms/Button';
 
-const url = 'http://209.126.2.112:3333';
+const url = 'https://back.appdorh.com';
 export default function HomeScreen({ navigation }) {
   const [items, setItems] = React.useState();
-
   React.useEffect(() => {
     async function connection() {
       try {
@@ -90,7 +89,7 @@ export default function HomeScreen({ navigation }) {
   const services = [
     {
       id: 1,
-      image: `${require('../assets/BannerRevisao.jpg')}`,
+      image: `${require('../assets/image-1.png')}`,
       nome: 'Upgrade de apresentação',
       descriptions: {
         1: 'Currículo ou LinkedIn',
@@ -105,7 +104,7 @@ Se você está à procura de recolocação no mercado de trabalho e não quer fa
 
       nome: 'Preparação para entrevista',
       descriptions: {
-        1: 'Orientações para entrevistasª (2 sessões)',
+        1: 'Orientações para entrevistas (2 sessões)',
         2: 'Elaboração ou revisão de currículo',
         3: 'Revisão de Linkedin',
         4: 'Carta de apresentação',
@@ -142,6 +141,28 @@ Se você está à procura de recolocação no mercado de trabalho e não quer fa
       },
       detalhes: `Todos sabemos que o tempo é um recurso limitado, por isso, é importante usá-lo nas coisas que realmente importam. Aumente o tempo dedicado a busca ativa por vagas com esse pacote, deixando o trabalho por nossa parte! Assim, você poderá se dedicar a capacitações e outras atividades enquanto entregamos as melhores oportunidades em suas mãos. `,
     },
+    {
+      id: 5,
+      image: `${require('../assets/image3-3.png')}`,
+      nome: 'Coaching',
+      descriptions: {
+        1: 'Mentoria para alcance de suas metas!',
+        2: '10 sessões',
+      },
+      detalhes: `Para quem almeja grandes conquistas o coaching é um processo de grande auxílio. Com o uso de técnicas cientificamente comprovadas e a experiência de nossos consultores, você será guiado rumo ao futuro que deseja!`,
+    },
+    {
+      id: 6,
+      image: `${require('../assets/image3-4.jpg')}`,
+      nome: 'Treinamento',
+      descriptions: {
+        1: 'Tenha os anos de experiência dos nossos\nconsultores ao seu lado',
+      },
+      detalhes: `Explore suas habilidades e desenvolva as aptidões mais desejáveis do mercado de trabalho através dos seguintes treinamentos: 
+      • Administração do tempo: Aprenda a otimizar seu tempo e ateste que a frase "não tenho tempo para X" só existe para quem não se organiza. 
+      • Comunicação/Oratória: Aperfeiçoe essa qualidade tão essencial nos relacionamentos profissionais e veja suas oportunidades multiplicarem.
+      • Liderança: Caminhe em direção ao topo da carreira através do aprimoramento da sua capacidade de liderança. `,
+    },
   ];
 
   userData.plans = services;
@@ -150,6 +171,7 @@ Se você está à procura de recolocação no mercado de trabalho e não quer fa
 
   return (
     <ScrollView
+      removeClippedSubviews={false}
       style={{
         display: 'flex',
 

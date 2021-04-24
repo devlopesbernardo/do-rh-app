@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import { view } from '@risingstack/react-easy-state';
 import userData from '../UserStore';
 import axios from 'axios';
+import * as Permissions from 'expo-permissions';
+import * as ImagePicker from 'expo-image-picker';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import photo from '../assets/user-logged.png';
@@ -12,7 +14,24 @@ import { useNavigation } from '@react-navigation/native';
 import { Layout } from '@ui-kitten/components';
 
 const LoggedIn = view(() => {
-  const url = 'http://209.126.2.112:3333';
+  const url = 'https://back.appdorh.com';
+  const [image, setImage] = React.useState(null);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+      userData.data.picture = result.uri;
+    }
+  };
 
   const navigation = useNavigation();
 
@@ -85,6 +104,17 @@ const LoggedIn = view(() => {
     };
 
     loadMyPlans();
+
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const {
+          status,
+        } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      }
+    })();
   }, []);
   let dArr;
   function reformatDate(dateStr) {
@@ -160,7 +190,20 @@ const LoggedIn = view(() => {
       </View>
       <View style={styles.userData}>
         <View style={styles.photo}>
-          <Image source={photo} style={styles.insidePhoto} />
+          <TouchableOpacity
+            onPress={() => {
+              pickImage();
+            }}
+          >
+            <Image
+              source={
+                userData.data.picture !== null
+                  ? { uri: userData.data.picture }
+                  : photo
+              }
+              style={styles.insidePhoto}
+            />
+          </TouchableOpacity>
         </View>
         <View style={styles.texts}>
           <Text style={styles.name}>{userData.data.full_name}</Text>
