@@ -25,10 +25,14 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import userData from '../UserStore';
+import { useNavigation } from '@react-navigation/native';
+
 import Button from '../atoms/Button';
 
 const url = 'https://back.appdorh.com';
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen() {
+  const navigation = useNavigation();
+
   const [items, setItems] = React.useState();
   React.useEffect(() => {
     async function connection() {
@@ -71,6 +75,7 @@ export default function HomeScreen({ navigation }) {
       const name = await fullName.data;
       userData.data = name;
       userData.data.token = await AsyncStorage.getItem('@rhToken');
+      userData.data.picture = await AsyncStorage.getItem('@rhPhoto');
       // console.log(userData.data);
     } catch (e) {
       console.log(e);
@@ -151,19 +156,20 @@ Se você está à procura de recolocação no mercado de trabalho e não quer fa
       },
       detalhes: `Para quem almeja grandes conquistas o coaching é um processo de grande auxílio. Com o uso de técnicas cientificamente comprovadas e a experiência de nossos consultores, você será guiado rumo ao futuro que deseja!`,
     },
-    {
-      id: 6,
-      image: `${require('../assets/image3-4.jpg')}`,
-      nome: 'Treinamento',
-      descriptions: {
-        1: 'Tenha os anos de experiência dos nossos\nconsultores ao seu lado',
-      },
-      detalhes: `Explore suas habilidades e desenvolva as aptidões mais desejáveis do mercado de trabalho através dos seguintes treinamentos: 
-      • Administração do tempo: Aprenda a otimizar seu tempo e ateste que a frase "não tenho tempo para X" só existe para quem não se organiza. 
-      • Comunicação/Oratória: Aperfeiçoe essa qualidade tão essencial nos relacionamentos profissionais e veja suas oportunidades multiplicarem.
-      • Liderança: Caminhe em direção ao topo da carreira através do aprimoramento da sua capacidade de liderança. `,
-    },
   ];
+
+  const training = {
+    id: 6,
+    image: `${require('../assets/image3-4.jpg')}`,
+    nome: 'Treinamento',
+    descriptions: {
+      1: 'Tenha os anos de experiência dos nossos\nconsultores ao seu lado',
+    },
+    detalhes: `Explore suas habilidades e desenvolva as aptidões mais desejáveis do mercado de trabalho através dos seguintes treinamentos: 
+    • Administração do tempo: Aprenda a otimizar seu tempo e ateste que a frase "não tenho tempo para X" só existe para quem não se organiza. 
+    • Comunicação/Oratória: Aperfeiçoe essa qualidade tão essencial nos relacionamentos profissionais e veja suas oportunidades multiplicarem.
+    • Liderança: Caminhe em direção ao topo da carreira através do aprimoramento da sua capacidade de liderança. `,
+  };
 
   userData.plans = services;
   userData.selectedPlan = {};
@@ -201,6 +207,19 @@ Se você está à procura de recolocação no mercado de trabalho e não quer fa
           />
         );
       })}
+      <SingleService
+        key={training.id}
+        onPress={() => {
+          userData.selectedPlan = training;
+          navigation.navigate('Treinamento');
+        }}
+        id={training.id}
+        image={training.image}
+        entire_data={training}
+        service={training.nome}
+        descriptions={training.descriptions}
+        route="Treinamento"
+      />
       <StatusBar style={'dark'} />
     </ScrollView>
   );

@@ -133,6 +133,7 @@ const PlanTemplate = view(() => {
 
   const sendInfos = async () => {
     if (userData.selectedPlan.plan_id !== 5) {
+      console.log('oi');
       try {
         const data = await axios({
           method: 'PUT',
@@ -156,6 +157,7 @@ const PlanTemplate = view(() => {
         });
         const response = await data.data;
         if (pdf) {
+          console.log('tem pdf');
           await sendPdf();
         }
         if (userData.calendarDate) {
@@ -302,14 +304,14 @@ const PlanTemplate = view(() => {
               onChangeText={(text) => setLink2(text)}
               value={link2}
               style={styles.link}
-              placeholder="Link 1"
+              placeholder={isEditing ? link2 : 'Link 2'}
               placeholderTextColor="grey"
             />
             <TextInput
               onChangeText={(text) => setLink3(text)}
               value={link3}
               style={styles.link}
-              placeholder="Link 1"
+              placeholder={isEditing ? link3 : 'Link 3'}
               placeholderTextColor="grey"
             />
           </View>

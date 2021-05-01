@@ -29,6 +29,7 @@ const LoggedIn = view(() => {
 
     if (!result.cancelled) {
       setImage(result.uri);
+      await AsyncStorage.setItem('@rhPhoto', result.uri);
       userData.data.picture = result.uri;
     }
   };
@@ -81,6 +82,7 @@ const LoggedIn = view(() => {
 
   React.useEffect(() => {
     setLoading(true);
+    console.log(userData.data.picture);
     const loadMyPlans = async () => {
       try {
         setLoading(true);
@@ -197,7 +199,8 @@ const LoggedIn = view(() => {
           >
             <Image
               source={
-                userData.data.picture !== null
+                userData.data.picture !== null ||
+                userData.data.picture !== undefined
                   ? { uri: userData.data.picture }
                   : photo
               }
@@ -214,7 +217,7 @@ const LoggedIn = view(() => {
         <Text style={styles.h2}>Minhas contratações</Text>
         {plans.map((plan) => {
           return (
-            <View style={styles.singlePlan}>
+            <View style={styles.singlePlan} key={plan.id}>
               <Text style={styles.h5}>{plan.plan_name}</Text>
               {Object.keys(userData.plans[plan.plan_id - 1].descriptions).map(
                 (key, index) => {
@@ -225,11 +228,6 @@ const LoggedIn = view(() => {
                   );
                 },
               )}
-              {/* Object.keys(props.descriptions).map((key, index) => (
-              <Text
-                key={key}
-                style={styles.h6}
-              >{`\u2022 ${props.descriptions[key]}`}</Text> */}
 
               <View style={styles.status}>
                 <Text style={styles.h3}>Status do serviço</Text>

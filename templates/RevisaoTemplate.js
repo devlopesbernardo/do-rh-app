@@ -142,14 +142,24 @@ export default function RevisaoTemplate(props) {
           <Layout style={styles.overlay} />
 
           <View style={styles.headerTop}>
-            <View style={styles.parentArrow}>
-              <Feather
-                name="arrow-left"
-                size={25}
-                color="rgba(50, 50, 50, 0.5)"
-                style={styles.arrow}
-              />
-            </View>
+            <Feather.Button
+              name="arrow-left"
+              onPress={() => navigation.goBack()}
+              backgroundColor="rgba(0, 0, 0, 0.0)"
+              size={20}
+              color="#D31B28"
+              iconStyle={{
+                borderRadius: 500,
+                width: 20,
+                alignSelf: 'center',
+                height: 30,
+                //padding: 5,
+                paddingTop: 5,
+                paddingLeft: 3,
+              }}
+              style={styles.arrow}
+              borderRadius={500}
+            />
             <Text style={styles.headerText}>{plan.nome}</Text>
           </View>
         </ImageBackground>
@@ -235,15 +245,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   parentArrow: {
-    backgroundColor: '#fefefe',
-    padding: 10,
+    padding: 7,
+    borderColor: '#D31B28',
+    borderWidth: 2,
     marginLeft: 15,
     display: 'flex',
     position: 'absolute',
-    borderRadius: 50,
+    borderRadius: 500,
   },
   arrow: {
     alignSelf: 'center',
+    borderRadius: 500,
+    padding: 7,
+    backgroundColor: '#fff',
+    borderColor: '#D31B28',
+    borderWidth: 2,
+    marginLeft: 15,
   },
   image: {},
   bg: {

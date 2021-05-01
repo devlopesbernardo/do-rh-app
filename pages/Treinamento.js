@@ -10,25 +10,30 @@ import feedback from '../assets/feedback.png';
 import { Feather } from '@expo/vector-icons';
 import userData from '../UserStore';
 import ButtonRH from '../atoms/Button';
-import * as WebBrowser from 'expo-web-browser';
+import axios from 'axios';
 
-export default function Feedback() {
-  const [checked, setChecked] = React.useState(false);
+export default function Treinamento() {
   const [career, setCareer] = React.useState('');
-  const [filename, setFilename] = React.useState('');
   console.log(userData.selectedPlan);
-  const downloadUrl = async () => {
-    Alert.alert(
-      'Agora você verá seu feedback',
-      'A página abrirá em um navegador!',
-      [{ text: 'OK', onPress: () => downloadIndeed() }],
-    );
-    const downloadIndeed = async () => {
-      await WebBrowser.openBrowserAsync(
-        userData.selectedPlan.user_feedback_file,
-      );
-    };
+
+  const sendMail = async () => {
+    try {
+      const send = await axios({
+        method: 'POST',
+        url: 'https://back.appdorh.com/treinamento-email',
+        headers: {
+          'content-type': 'application/json;charset=utf-8',
+          Authorization: `Bearer ${userData.data.token}`,
+        },
+        data: career,
+      });
+      const response = await send.data;
+      console.log('oi', response);
+    } catch (e) {
+      console.log(e);
+    }
   };
+
   return (
     <ScrollView
       style={styles.main}
@@ -42,33 +47,49 @@ export default function Feedback() {
         <Image source={feedback} style={styles.image} />
       </View>
       <View style={styles.section1}>
-        <Text style={styles.h1}>Feedback de serviço</Text>
-        <View style={styles.selecionar} onTouchStart={() => downloadUrl()}>
-          <Feather
-            name="log-out"
-            //backgroundColor="rgba(0, 0, 0, 0.0)"
-            size={30}
-            color="#D31B28"
-            style={styles.icon}
-          />
-          <Text style={styles.hButton}>Feedback</Text>
-        </View>
+        <Text style={styles.h1}>Formulário de contato</Text>
       </View>
       <View style={styles.section2}>
         <Text style={styles.bold}>
-          Conte um pouco sobre sua atuação situação e seus objetivos de carreira
+          Como o treinamento dos nossos profissionais poderá te ajudar?
         </Text>
         <TextInput
           multiline={true}
           numberOfLines={4}
-          editable={false}
           scrollEnabled={true}
+          onChangeText={(text) => {
+            setCareer(text);
+          }}
           value={career}
           style={styles.career}
-          placeholder={userData.selectedPlan.user_feedback}
+          placeholder={'Como conseguiremos ajudar?'}
           placeholderTextColor="grey"
         />
       </View>
+      <ButtonRH
+        //onPress={() => buttonClicked()}
+        onPress={() => {
+          sendMail();
+        }}
+        text="Enviar mensagem"
+        style={styles.button}
+        buttonStyle={styles.buttonStyle}
+        fontSize={{ fontSize: 20 }}
+        size="22"
+      />
+      <ButtonRH
+        route={'Home'}
+        text="Enviar depois"
+        style={styles.outlineButton}
+        red={true}
+        buttonStyle={styles.outlineButtonStyle}
+        fontSize={{
+          fontSize: 25,
+          color: '#D31B28',
+          fontFamily: 'Poppins_400Regular',
+        }}
+        size={22}
+      />
     </ScrollView>
   );
 }
@@ -76,6 +97,7 @@ const styles = StyleSheet.create({
   main: {
     width: '100%',
     paddingHorizontal: 10,
+    alignSelf: 'center',
   },
   imageParent: {
     width: 128,
@@ -172,5 +194,39 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'center',
     width: '100%',
+  },
+  button: {
+    alignSelf: 'center',
+    borderRadius: 12,
+    width: '100%',
+    display: 'flex',
+    alignContent: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  buttonStyle: {
+    height: 70,
+    flex: 1,
+  },
+  outlineButton: {
+    alignSelf: 'center',
+    borderRadius: 12,
+    width: '100%',
+    display: 'flex',
+    alignContent: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    fontFamily: 'Poppins_400Regular',
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  outlineButtonStyle: {
+    backgroundColor: '#fff',
+    height: 70,
+    flex: 1,
+    borderColor: '#D31B28',
+    fontFamily: 'Poppins_400Regular',
   },
 });
